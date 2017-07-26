@@ -24,8 +24,8 @@ from darknet import Darknet
 
 def motion_det_save_img(camurl, m, use_cuda, class_names):
     count = 0
-    req_url = "rtsp://" + camurl + '/axis-media/media.amp'
-    
+    # req_url = "rtsp://" + camurl + '/axis-media/media.amp'
+    req_url = "http://" + camurl + "/mjpg/video.mjpg"
     folder_name = camurl.replace(".", "_")
     cur_date = time.strftime("%m_%d_%y")
     cur_hour = time.strftime("%H")
@@ -71,13 +71,13 @@ def motion_det_save_img(camurl, m, use_cuda, class_names):
 
             non_zero = (1.0 * (temp_array != 0).sum() / total)
 '''
-            if non_zero >= 0.03:
+            if non_zero >= 0.05:
                 cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
                 pil_im = Image.fromarray(cv2_im)
 		#global m
 		#global use_cuda
 		#global class_names
-                sized = pil_im.resize((m.width, m.height))
+                sized = pil_im.resize((m.width * 0.8, m.height * 0.8))
                 boxes = do_detect(m, sized, 0.5, 0.4, use_cuda)
                 for box in boxes:
                     thresh = 0.5
@@ -173,7 +173,7 @@ url_path = "./snapshot/"
 urls = modified_urls(url_path)
 random.shuffle(urls)
 
-print(urls)
+# print(urls)
 #yolo model
 #thresh = 0.8
 cfgfile = 'cfg/yolo.cfg'
